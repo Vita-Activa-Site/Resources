@@ -38,19 +38,46 @@
     }
 
     .va-panel {
+      height: min(980px, 92vh);
       background: linear-gradient(180deg, var(--va-cream), #fff 72%);
       border: 1px solid var(--va-border);
       border-radius: 28px;
-      padding: 24px;
+      padding: 0;
       box-shadow: 0 12px 32px var(--va-shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
+
+    .va-sticky {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: linear-gradient(180deg, var(--va-cream), rgba(246, 244, 243, 0.96) 72%, rgba(246, 244, 243, 0.92));
+      border-bottom: 1px solid var(--va-border);
+      padding: 24px 24px 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    .va-results {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 22px 24px 24px;
+      scrollbar-gutter: stable;
+    }
+
+    .va-results::-webkit-scrollbar { width: 10px; }
+    .va-results::-webkit-scrollbar-track { background: transparent; }
+    .va-results::-webkit-scrollbar-thumb { background: rgba(13, 125, 123, 0.28); border-radius: 999px; }
+    .va-results::-webkit-scrollbar-thumb:hover { background: rgba(13, 125, 123, 0.45); }
 
     .va-topbar {
       display: flex;
       justify-content: space-between;
       gap: 16px;
       align-items: flex-start;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .va-kicker {
@@ -112,7 +139,7 @@
       display: grid;
       grid-template-columns: 1.1fr .9fr .9fr;
       gap: 12px;
-      margin: 24px 0 18px;
+      margin: 18px 0 14px;
     }
 
     .search-wrap, .select-wrap {
@@ -164,7 +191,7 @@
       justify-content: space-between;
       gap: 12px;
       align-items: center;
-      margin: 14px 0 18px;
+      margin: 12px 0 0;
       color: var(--va-muted);
       font-size: .95rem;
     }
@@ -278,6 +305,12 @@
       font-weight: 750;
     }
 
+    .tag.recommended {
+      background: var(--va-pink-soft);
+      color: var(--va-black);
+      border-color: rgba(213, 81, 157, 0.28);
+    }
+
     .visit {
       display: inline-flex;
       align-items: center;
@@ -317,7 +350,9 @@
 
     @media (max-width: 620px) {
       .va-directory { padding: 12px 10px 46px; }
-      .va-panel { padding: 18px; border-radius: 22px; }
+      .va-panel { height: 900px; border-radius: 22px; }
+      .va-sticky { padding: 18px; }
+      .va-results { padding: 18px; }
       .grid { grid-template-columns: 1fr; }
       .summary-row { align-items: flex-start; flex-direction: column; }
       .card { min-height: auto; }
@@ -327,6 +362,7 @@
 <body>
   <main class="va-directory" aria-label="Vita Activa resource directory">
     <section class="va-panel">
+      <div class="va-sticky">
       <div class="va-topbar">
         <div>
           <span class="va-kicker" data-i18n="kicker">Directorio de recursos</span>
@@ -361,9 +397,12 @@
         <span id="result-count"></span>
         <button class="reset-btn" type="button" id="reset" data-i18n="reset">Limpiar filtros</button>
       </div>
+      </div>
 
-      <div class="grid" id="grid"></div>
-      <div class="empty" id="empty" data-i18n="empty">No encontramos resultados con esos filtros. Prueba otra búsqueda o limpia los filtros.</div>
+      <div class="va-results" aria-label="Resultados del directorio">
+        <div class="grid" id="grid"></div>
+        <div class="empty" id="empty" data-i18n="empty">No encontramos resultados con esos filtros. Prueba otra búsqueda o limpia los filtros.</div>
+      </div>
     </section>
   </main>
 
@@ -384,6 +423,7 @@
         visit: 'Visitar sitio',
         visitResource: 'Ver recurso',
         noStableLink: 'Sin enlace estable',
+        recommended: 'Recomendado por Vita Activa',
         reset: 'Limpiar filtros',
         empty: 'No encontramos resultados con esos filtros. Prueba otra búsqueda o limpia los filtros.',
         results: n => `${n} resultado${n === 1 ? '' : 's'}`,
@@ -400,7 +440,8 @@
           aiFeminist: 'IA feminista',
           pressFreedom: 'Libertad de expresión y prensa',
           humanRights: 'Derechos humanos e inclusión',
-          childrenSafety: 'Niñez y seguridad digital'
+          childrenSafety: 'Niñez y seguridad digital',
+          wellbeing: 'Bienestar y resiliencia'
         },
         regions: {
           all: 'Todos los territorios',
@@ -423,7 +464,8 @@
           pakistan: 'Pakistán',
           india: 'India',
           honduras: 'Honduras',
-          globalSouth: 'América Latina / Sur Global'
+          globalSouth: 'América Latina / Sur Global',
+          unitedStates: 'Estados Unidos'
         }
       },
       en: {
@@ -441,6 +483,7 @@
         visit: 'Visit site',
         visitResource: 'View resource',
         noStableLink: 'No stable link',
+        recommended: 'Recommended by Vita Activa',
         reset: 'Clear filters',
         empty: 'No results found with these filters. Try another search or clear the filters.',
         results: n => `${n} result${n === 1 ? '' : 's'}`,
@@ -457,7 +500,8 @@
           aiFeminist: 'Feminist AI',
           pressFreedom: 'Freedom of expression and press',
           humanRights: 'Human rights and inclusion',
-          childrenSafety: 'Children and digital safety'
+          childrenSafety: 'Children and digital safety',
+          wellbeing: 'Wellbeing and resilience'
         },
         regions: {
           all: 'All territories',
@@ -480,13 +524,44 @@
           pakistan: 'Pakistan',
           india: 'India',
           honduras: 'Honduras',
-          globalSouth: 'Latin America / Global South'
+          globalSouth: 'Latin America / Global South',
+          unitedStates: 'United States'
         }
       }
     };
 
     const items = [
+
       {
+            "type": "organization",
+            "name": "Access Now",
+            "recommended": true,
+            "regionKey": "global",
+            "categoryKey": "digitalRights",
+            "emoji": "🛡️",
+            "url": "https://www.accessnow.org",
+            "es": {
+                  "description": "Defiende y promueve los derechos humanos en el entorno digital a nivel mundial mediante incidencia, litigio estratégico, apoyo a personas defensoras y guías de seguridad digital multilingües."
+            },
+            "en": {
+                  "description": "Defends and promotes human rights in the digital environment worldwide through advocacy, strategic litigation, support for defenders, and multilingual digital security guides."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Media Resilience Network (MDRnet)",
+            "recommended": true,
+            "regionKey": "unitedStates",
+            "categoryKey": "wellbeing",
+            "emoji": "🌳",
+            "url": "https://mdrnet.org",
+            "es": {
+                  "description": "Programa de Vita Activa que apoya la salud emocional, mental y organizacional de periodistas y líderes de medios BIPOC en EE.UU. mediante acompañamiento confidencial, espacios de pares y recursos de cuidado."
+            },
+            "en": {
+                  "description": "A Vita Activa program supporting the emotional, mental, and organizational wellbeing of BIPOC journalists and media leaders in the U.S. through confidential support, peer spaces, and care resources."
+            }
+      },      {
             "type": "organization",
             "name": "La Sandía Digital",
             "regionKey": "mexico",
@@ -685,6 +760,7 @@
       {
             "type": "organization",
             "name": "RELPEX – Red Latinoamericana de Periodismo de Investigación y Libertad de Expresión",
+            "recommended": true,
             "regionKey": "latinAmerica",
             "categoryKey": "pressFreedom",
             "emoji": "📰",
@@ -699,6 +775,7 @@
       {
             "type": "organization",
             "name": "IFEX – International Freedom of Expression Exchange",
+            "recommended": true,
             "regionKey": "global",
             "categoryKey": "pressFreedom",
             "emoji": "🗣️",
@@ -713,6 +790,7 @@
       {
             "type": "organization",
             "name": "Coalition Against Online Violence (CAOV)",
+            "recommended": true,
             "regionKey": "global",
             "categoryKey": "digitalViolence",
             "emoji": "🛡️",
@@ -727,6 +805,7 @@
       {
             "type": "organization",
             "name": "Frontline Freelance México (FFM)",
+            "recommended": true,
             "regionKey": "mexico",
             "categoryKey": "pressFreedom",
             "emoji": "🎙️",
@@ -1113,6 +1192,7 @@
       const href = item.url ? item.url : '#';
       const disabled = item.url ? '' : ' disabled';
       const linkAttrs = item.url ? 'target="_blank" rel="noopener noreferrer"' : 'aria-disabled="true"';
+      const recommendedTag = item.recommended ? `<span class="tag recommended">${UI[state.lang].recommended}</span>` : '';
       return `
         <article class="card">
           <div class="card-top">
@@ -1122,7 +1202,7 @@
           <h3>${item.name}</h3>
           <p class="region">${regionLabel}</p>
           <p class="description">${local.description}</p>
-          <div class="tags"><span class="tag">${categoryLabel}</span></div>
+          <div class="tags"><span class="tag">${categoryLabel}</span>${recommendedTag}</div>
           <a class="visit${disabled}" href="${href}" ${linkAttrs}>${item.url ? cta : UI[state.lang].noStableLink} →</a>
         </article>`;
     }
