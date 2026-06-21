@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recursos Vita Activa</title>
+  <style>
+    :root {
+      --va-orange: #F57F20;
+      --va-teal: #0D7D7B;
+      --va-lavender: #D4CBE5;
+      --va-pink: #D5519D;
+      --va-black: #060707;
+      --va-cream: #F6F4F3;
+      --va-white: #FFFFFF;
+      --va-muted: #5F5A58;
+      --va-border: #E8E2DD;
+      --va-shadow: rgba(6, 7, 7, 0.10);
+      --va-teal-soft: rgba(13, 125, 123, 0.10);
+      --va-pink-soft: rgba(213, 81, 157, 0.12);
+      --va-orange-soft: rgba(245, 127, 32, 0.13);
+      --va-lavender-soft: rgba(212, 203, 229, 0.55);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Manrope, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--va-black);
+      background: transparent;
+    }
+
+    .va-directory {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 16px 64px;
+    }
+
+    .va-panel {
+      background: linear-gradient(180deg, var(--va-cream), #fff 72%);
+      border: 1px solid var(--va-border);
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: 0 12px 32px var(--va-shadow);
+    }
+
+    .va-topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .va-kicker {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--va-teal);
+    }
+
+    .va-title {
+      margin: 0;
+      font-size: clamp(1.7rem, 3vw, 2.45rem);
+      line-height: 1.12;
+      color: var(--va-black);
+    }
+
+    .va-lede {
+      max-width: 780px;
+      margin: 12px 0 0;
+      color: var(--va-muted);
+      font-size: 1.03rem;
+      line-height: 1.62;
+    }
+
+    .lang-toggle {
+      display: inline-flex;
+      gap: 6px;
+      padding: 6px;
+      border-radius: 999px;
+      background: var(--va-white);
+      border: 1px solid var(--va-border);
+      flex-shrink: 0;
+    }
+
+    .lang-btn, .tab-btn, .filter-btn {
+      font-family: inherit;
+      cursor: pointer;
+      border: 0;
+      transition: all .18s ease;
+    }
+
+    .lang-btn {
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--va-muted);
+      font-weight: 800;
+    }
+
+    .lang-btn.active {
+      background: var(--va-teal);
+      color: #fff;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr .9fr;
+      gap: 12px;
+      margin: 24px 0 18px;
+    }
+
+    .search-wrap, .select-wrap {
+      position: relative;
+    }
+
+    .search-input, .select-input {
+      width: 100%;
+      min-height: 48px;
+      border: 1.5px solid var(--va-border);
+      border-radius: 16px;
+      padding: 12px 14px;
+      color: var(--va-black);
+      background: #fff;
+      font: inherit;
+      outline: none;
+    }
+
+    .search-input:focus, .select-input:focus {
+      border-color: var(--va-teal);
+      box-shadow: 0 0 0 4px rgba(13, 125, 123, 0.14);
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 4px 0 18px;
+    }
+
+    .tab-btn {
+      padding: 10px 15px;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--va-black);
+      border: 1px solid var(--va-border);
+      font-weight: 800;
+    }
+
+    .tab-btn.active {
+      background: var(--va-pink);
+      color: #fff;
+      border-color: var(--va-pink);
+      box-shadow: 0 8px 18px rgba(213, 81, 157, 0.18);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin: 14px 0 18px;
+      color: var(--va-muted);
+      font-size: .95rem;
+    }
+
+    .reset-btn {
+      background: transparent;
+      color: var(--va-teal);
+      border: 0;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      padding: 6px 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      min-height: 255px;
+      padding: 22px;
+      border-radius: 22px;
+      background: #fff;
+      border: 1px solid var(--va-border);
+      box-shadow: 0 8px 22px rgba(6, 7, 7, 0.07);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(13, 125, 123, 0.45);
+      box-shadow: 0 14px 32px rgba(6, 7, 7, 0.11);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .emoji {
+      width: 44px;
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 15px;
+      background: var(--va-teal-soft);
+      font-size: 1.35rem;
+    }
+
+    .kind {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 800;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .kind.org { background: var(--va-lavender-soft); color: var(--va-black); }
+    .kind.resource { background: var(--va-orange-soft); color: var(--va-black); }
+
+    .card h3 {
+      margin: 0 0 7px;
+      font-size: 1.18rem;
+      line-height: 1.25;
+      color: var(--va-black);
+    }
+
+    .region {
+      margin: 0 0 12px;
+      color: var(--va-teal);
+      font-size: .83rem;
+      font-weight: 900;
+      letter-spacing: .045em;
+      text-transform: uppercase;
+    }
+
+    .description {
+      margin: 0 0 16px;
+      color: var(--va-muted);
+      line-height: 1.55;
+      font-size: .96rem;
+      flex-grow: 1;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 0 0 17px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: var(--va-cream);
+      color: var(--va-black);
+      border: 1px solid var(--va-border);
+      font-size: .74rem;
+      font-weight: 750;
+    }
+
+    .visit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: fit-content;
+      margin-top: auto;
+      color: #fff;
+      background: var(--va-teal);
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 850;
+      font-size: .92rem;
+      transition: background .18s ease, transform .18s ease;
+    }
+
+    .visit:hover { background: var(--va-pink); transform: translateY(-1px); }
+    .visit.disabled { pointer-events: none; opacity: .55; background: #777; }
+
+    .empty {
+      display: none;
+      padding: 30px;
+      border-radius: 22px;
+      background: #fff;
+      border: 1px dashed var(--va-border);
+      color: var(--va-muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 940px) {
+      .controls { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .va-topbar { flex-direction: column; }
+    }
+
+    @media (max-width: 620px) {
+      .va-directory { padding: 12px 10px 46px; }
+      .va-panel { padding: 18px; border-radius: 22px; }
+      .grid { grid-template-columns: 1fr; }
+      .summary-row { align-items: flex-start; flex-direction: column; }
+      .card { min-height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <main class="va-directory" aria-label="Vita Activa resource directory">
+    <section class="va-panel">
+      <div class="va-topbar">
+        <div>
+          <span class="va-kicker" data-i18n="kicker">Directorio de recursos</span>
+          <h2 class="va-title" data-i18n="title">Explora organizaciones y recursos</h2>
+          <p class="va-lede" data-i18n="lede">Encuentra organizaciones, guías, líneas de ayuda y herramientas para fortalecer la seguridad digital, enfrentar violencias en línea y cuidar el bienestar de periodistas, activistas y defensoras de derechos humanos.</p>
+        </div>
+        <div class="lang-toggle" aria-label="Language selector">
+          <button class="lang-btn active" type="button" data-lang="es">ES</button>
+          <button class="lang-btn" type="button" data-lang="en">EN</button>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Content type">
+        <button class="tab-btn active" type="button" data-type="all" data-i18n="tabAll">Todo</button>
+        <button class="tab-btn" type="button" data-type="organization" data-i18n="tabOrganizations">Organizaciones aliadas</button>
+        <button class="tab-btn" type="button" data-type="resource" data-i18n="tabResources">Recursos destacados</button>
+      </div>
+
+      <div class="controls">
+        <div class="search-wrap">
+          <input class="search-input" id="search" type="search" placeholder="Buscar por nombre, país o tema" aria-label="Buscar recursos" />
+        </div>
+        <div class="select-wrap">
+          <select class="select-input" id="category" aria-label="Filtrar por categoría"></select>
+        </div>
+        <div class="select-wrap">
+          <select class="select-input" id="region" aria-label="Filtrar por territorio"></select>
+        </div>
+      </div>
+
+      <div class="summary-row">
+        <span id="result-count"></span>
+        <button class="reset-btn" type="button" id="reset" data-i18n="reset">Limpiar filtros</button>
+      </div>
+
+      <div class="grid" id="grid"></div>
+      <div class="empty" id="empty" data-i18n="empty">No encontramos resultados con esos filtros. Prueba otra búsqueda o limpia los filtros.</div>
+    </section>
+  </main>
+
+  <script>
+    const UI = {
+      es: {
+        kicker: 'Directorio de recursos',
+        title: 'Explora organizaciones y recursos',
+        lede: 'Encuentra organizaciones, guías, líneas de ayuda y herramientas para fortalecer la seguridad digital, enfrentar violencias en línea y cuidar el bienestar de periodistas, activistas y defensoras de derechos humanos.',
+        tabAll: 'Todo',
+        tabOrganizations: 'Organizaciones aliadas',
+        tabResources: 'Recursos destacados',
+        searchPlaceholder: 'Buscar por nombre, país o tema',
+        allCategories: 'Todas las categorías',
+        allRegions: 'Todos los territorios',
+        organization: 'Organización',
+        resource: 'Recurso',
+        visit: 'Visitar sitio',
+        visitResource: 'Ver recurso',
+        noStableLink: 'Sin enlace estable',
+        reset: 'Limpiar filtros',
+        empty: 'No encontramos resultados con esos filtros. Prueba otra búsqueda o limpia los filtros.',
+        results: n => `${n} resultado${n === 1 ? '' : 's'}`,
+        categories: {
+          all: 'Todas las categorías',
+          digitalRights: 'Derechos digitales',
+          feministSecurity: 'Seguridad digital feminista',
+          digitalViolence: 'Violencia digital y acompañamiento',
+          civicTech: 'Tecnología cívica',
+          feministNarratives: 'Narrativas feministas',
+          helpline: 'Líneas de ayuda',
+          journalism: 'Periodismo',
+          tools: 'Herramientas y guías',
+          aiFeminist: 'IA feminista',
+          pressFreedom: 'Libertad de expresión y prensa',
+          humanRights: 'Derechos humanos e inclusión',
+          childrenSafety: 'Niñez y seguridad digital'
+        },
+        regions: {
+          all: 'Todos los territorios',
+          latinAmerica: 'América Latina',
+          mexico: 'México',
+          colombia: 'Colombia',
+          brazil: 'Brasil',
+          chile: 'Chile',
+          bolivia: 'Bolivia',
+          guatemala: 'Guatemala',
+          peru: 'Perú',
+          ecuador: 'Ecuador',
+          global: 'Global',
+          iberoamerica: 'Iberoamérica',
+          diaspora: 'AL / diáspora',
+          panama: 'Panamá',
+          spainCatalonia: 'España / Cataluña',
+          franceEurope: 'Francia / Europa',
+          indonesia: 'Indonesia',
+          pakistan: 'Pakistán',
+          india: 'India',
+          honduras: 'Honduras',
+          globalSouth: 'América Latina / Sur Global'
+        }
+      },
+      en: {
+        kicker: 'Resource directory',
+        title: 'Explore organizations and resources',
+        lede: 'Find organizations, guides, helplines, and tools to strengthen digital safety, respond to online violence, and support the wellbeing of journalists, activists, and human rights defenders.',
+        tabAll: 'All',
+        tabOrganizations: 'Allied organizations',
+        tabResources: 'Featured resources',
+        searchPlaceholder: 'Search by name, country, or topic',
+        allCategories: 'All categories',
+        allRegions: 'All territories',
+        organization: 'Organization',
+        resource: 'Resource',
+        visit: 'Visit site',
+        visitResource: 'View resource',
+        noStableLink: 'No stable link',
+        reset: 'Clear filters',
+        empty: 'No results found with these filters. Try another search or clear the filters.',
+        results: n => `${n} result${n === 1 ? '' : 's'}`,
+        categories: {
+          all: 'All categories',
+          digitalRights: 'Digital rights',
+          feministSecurity: 'Feminist digital security',
+          digitalViolence: 'Digital violence and support',
+          civicTech: 'Civic technology',
+          feministNarratives: 'Feminist narratives',
+          helpline: 'Helplines',
+          journalism: 'Journalism',
+          tools: 'Tools and guides',
+          aiFeminist: 'Feminist AI',
+          pressFreedom: 'Freedom of expression and press',
+          humanRights: 'Human rights and inclusion',
+          childrenSafety: 'Children and digital safety'
+        },
+        regions: {
+          all: 'All territories',
+          latinAmerica: 'Latin America',
+          mexico: 'Mexico',
+          colombia: 'Colombia',
+          brazil: 'Brazil',
+          chile: 'Chile',
+          bolivia: 'Bolivia',
+          guatemala: 'Guatemala',
+          peru: 'Peru',
+          ecuador: 'Ecuador',
+          global: 'Global',
+          iberoamerica: 'Ibero-America',
+          diaspora: 'Latin America / diaspora',
+          panama: 'Panama',
+          spainCatalonia: 'Spain / Catalonia',
+          franceEurope: 'France / Europe',
+          indonesia: 'Indonesia',
+          pakistan: 'Pakistan',
+          india: 'India',
+          honduras: 'Honduras',
+          globalSouth: 'Latin America / Global South'
+        }
+      }
+    };
+
+    const items = [
+      {
+            "type": "organization",
+            "name": "La Sandía Digital",
+            "regionKey": "mexico",
+            "categoryKey": "feministNarratives",
+            "emoji": "🎥",
+            "url": "https://lasandiadigital.org.mx",
+            "es": {
+                  "description": "Colectiva feminista de producción audiovisual colaborativa que usa narrativas contrahegemónicas para impulsar justicia socioambiental, de género y derechos humanos."
+            },
+            "en": {
+                  "description": "A feminist collaborative audiovisual collective using counter-hegemonic narratives to advance socio-environmental justice, gender justice, and human rights."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Ciberseguras",
+            "regionKey": "latinAmerica",
+            "categoryKey": "feministSecurity",
+            "emoji": "🔥",
+            "url": "https://ciberseguras.org",
+            "es": {
+                  "description": "Red ciberfeminista latinoamericana que crea recursos, talleres y acompañamiento para que mujeres y disidencias ejerzan sus derechos y se protejan frente a violencias digitales."
+            },
+            "en": {
+                  "description": "A Latin American cyberfeminist network creating resources, workshops, and support so women and gender-diverse people can exercise their rights and protect themselves from digital violence."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Cultivando Género A.C.",
+            "regionKey": "mexico",
+            "categoryKey": "digitalViolence",
+            "emoji": "🌿",
+            "url": "https://cultivandogeneroac.org",
+            "es": {
+                  "description": "Organización feminista que investiga, educa e incide frente a violencias de género, incluyendo las digitales, mediante materiales pedagógicos, talleres y acompañamiento."
+            },
+            "en": {
+                  "description": "A feminist organization that researches, educates, and advocates against gender-based violence, including digital violence, through educational materials, workshops, and support."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Fundación Karisma",
+            "regionKey": "colombia",
+            "categoryKey": "digitalRights",
+            "emoji": "⚖️",
+            "url": "https://web.karisma.org.co",
+            "es": {
+                  "description": "ONG que promueve libertad de expresión, privacidad, acceso a la información y equidad de género en entornos digitales mediante investigación, litigio e incidencia."
+            },
+            "en": {
+                  "description": "An NGO advancing freedom of expression, privacy, access to information, and gender equity in digital environments through research, litigation, and advocacy."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Sursiendo",
+            "regionKey": "mexico",
+            "categoryKey": "feministSecurity",
+            "emoji": "🌱",
+            "url": "https://sursiendo.org",
+            "es": {
+                  "description": "Colectivo que defiende la comunalidad digital y los derechos digitales colectivos desde los hackfeminismos, la autodefensa digital y el software y la cultura libres."
+            },
+            "en": {
+                  "description": "A collective defending digital communality and collective digital rights through hackfeminism, digital self-defense, free software, and free culture."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Coding Rights",
+            "regionKey": "brazil",
+            "categoryKey": "digitalRights",
+            "emoji": "💻",
+            "url": "https://codingrights.org",
+            "es": {
+                  "description": "Colectiva que promueve derechos fundamentales en el entorno digital con enfoque feminista, a través de investigación, arte, incidencia y vigilancia de leyes y extracción de datos."
+            },
+            "en": {
+                  "description": "A feminist collective promoting fundamental rights in digital environments through research, art, advocacy, and monitoring of laws and data extraction practices."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Amaranta ONG",
+            "regionKey": "chile",
+            "categoryKey": "digitalViolence",
+            "emoji": "🧭",
+            "url": "https://amarantas.org",
+            "es": {
+                  "description": "Organización feminista que investiga, educa e incide para enfrentar violencias digitales, fortalecer la autonomía digital y crear recursos abiertos para comunidades."
+            },
+            "en": {
+                  "description": "A feminist organization that researches, educates, and advocates to address digital violence, strengthen digital autonomy, and create open resources for communities."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "InternetBolivia.org",
+            "regionKey": "bolivia",
+            "categoryKey": "digitalRights",
+            "emoji": "🌐",
+            "url": "https://internetbolivia.org",
+            "es": {
+                  "description": "Colectivo que impulsa derechos digitales y acceso equitativo a internet mediante formación, investigación y propuestas sobre privacidad, libertad de expresión y políticas públicas."
+            },
+            "en": {
+                  "description": "A collective promoting digital rights and equitable internet access through training, research, and proposals on privacy, freedom of expression, and public policy."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Maria D’Ajuda",
+            "regionKey": "brazil",
+            "categoryKey": "helpline",
+            "emoji": "🆘",
+            "url": "https://mariadajuda.org",
+            "es": {
+                  "description": "Primera línea de ayuda en seguridad digital feminista en Brasil, con apoyo gratuito y seguro a mujeres, personas no binarias y organizaciones ante amenazas digitales."
+            },
+            "en": {
+                  "description": "Brazil’s first feminist digital security helpline, offering free and safe support to women, non-binary people, and organizations facing digital threats."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "CiberfemLab",
+            "regionKey": "guatemala",
+            "categoryKey": "feministSecurity",
+            "emoji": "🧪",
+            "url": "https://ciberfemlab.org/",
+            "es": {
+                  "description": "Laboratorio de hacktivismo nacido de Ciberfeministas Guatemala que busca soberanía tecnológica y visibiliza violencias de género en línea mediante acciones y pedagogías ciberfeministas."
+            },
+            "en": {
+                  "description": "A hacktivist lab emerging from Ciberfeministas Guatemala, focused on technological sovereignty and making online gender-based violence visible through cyberfeminist action and pedagogy."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "SocialTIC",
+            "regionKey": "mexico",
+            "categoryKey": "civicTech",
+            "emoji": "📊",
+            "url": "https://socialtic.org",
+            "es": {
+                  "description": "ONG de tecnología cívica que fortalece a periodistas, activistas y OSC en uso crítico de tecnologías, alfabetización de datos, seguridad digital y combate a la desinformación."
+            },
+            "en": {
+                  "description": "A civic technology NGO supporting journalists, activists, and civil society organizations in critical technology use, data literacy, digital security, and counter-disinformation work."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Acoso.Online",
+            "regionKey": "chile",
+            "categoryKey": "digitalViolence",
+            "emoji": "📱",
+            "url": "https://acoso.online",
+            "es": {
+                  "description": "Proyecto feminista que orienta a víctimas de violencia digital sexual y difamación, con guías legales, técnicas y de cuidado para remover contenidos y ejercer derechos."
+            },
+            "en": {
+                  "description": "A feminist project guiding survivors of image-based sexual violence and defamation, with legal, technical, and care-oriented guides to remove content and exercise rights."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Hiperderecho",
+            "regionKey": "peru",
+            "categoryKey": "digitalRights",
+            "emoji": "📚",
+            "url": "https://hiperderecho.org",
+            "es": {
+                  "description": "Organización de sociedad civil que defiende derechos y libertades en entornos digitales mediante investigación, litigio estratégico, activismo y formación."
+            },
+            "en": {
+                  "description": "A civil society organization defending rights and freedoms in digital environments through research, strategic litigation, activism, and training."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Luchadoras",
+            "regionKey": "mexico",
+            "categoryKey": "digitalViolence",
+            "emoji": "💜",
+            "url": "https://luchadoras.mx",
+            "es": {
+                  "description": "Colectiva feminista que promueve un internet libre de violencias mediante acompañamiento, formación y defensa de los derechos digitales."
+            },
+            "en": {
+                  "description": "A feminist collective promoting an internet free from violence through support, training, and digital rights advocacy."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "RELPEX – Red Latinoamericana de Periodismo de Investigación y Libertad de Expresión",
+            "regionKey": "latinAmerica",
+            "categoryKey": "pressFreedom",
+            "emoji": "📰",
+            "url": "https://www.sipiapa.org/relpex",
+            "es": {
+                  "description": "Iniciativa de la SIP que monitorea, documenta y visibiliza ataques contra la libertad de expresión y la prensa en la región, con datos, alertas y reportes comparables por país."
+            },
+            "en": {
+                  "description": "An IAPA initiative that monitors, documents, and makes visible attacks against freedom of expression and the press in the region, with country-comparable data, alerts, and reports."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "IFEX – International Freedom of Expression Exchange",
+            "regionKey": "global",
+            "categoryKey": "pressFreedom",
+            "emoji": "🗣️",
+            "url": "https://ifex.org",
+            "es": {
+                  "description": "Red global de más de 100 organizaciones que defienden y promueven la libertad de expresión como derecho humano, coordinando campañas, alertas y apoyo a personas y medios bajo ataque."
+            },
+            "en": {
+                  "description": "A global network of more than 100 organizations defending and promoting freedom of expression as a human right, coordinating campaigns, alerts, and support for people and media under attack."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Coalition Against Online Violence (CAOV)",
+            "regionKey": "global",
+            "categoryKey": "digitalViolence",
+            "emoji": "🛡️",
+            "url": "https://www.iwmf.org/our-programs/coalition-against-online-violence/",
+            "es": {
+                  "description": "Coalición de más de 80 organizaciones que desarrolla recursos, campañas y entrenamientos para prevenir y responder a la violencia en línea contra mujeres periodistas y otras personas en medios."
+            },
+            "en": {
+                  "description": "A coalition of more than 80 organizations developing resources, campaigns, and training to prevent and respond to online violence against women journalists and other media workers."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Frontline Freelance México (FFM)",
+            "regionKey": "mexico",
+            "categoryKey": "pressFreedom",
+            "emoji": "🎙️",
+            "url": "https://www.mexico.frontlinefreelance.org",
+            "es": {
+                  "description": "Organización de periodistas freelance que trabajan en zonas de riesgo en México, articulada para exigir condiciones seguras, apoyo entre pares y estándares de protección para la prensa local."
+            },
+            "en": {
+                  "description": "An organization of freelance journalists working in high-risk areas in Mexico, advocating for safer working conditions, peer support, and protection standards for local press."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Fundación Iguales",
+            "regionKey": "panama",
+            "categoryKey": "humanRights",
+            "emoji": "🌈",
+            "url": "https://www.fundacioniguales.org",
+            "es": {
+                  "description": "Organización que promueve y defiende los derechos humanos, con especial enfoque en los derechos de personas LGBTIQ+ y su seguridad y participación en espacios digitales."
+            },
+            "en": {
+                  "description": "An organization promoting and defending human rights, with a focus on LGBTIQ+ rights and their safety and participation in digital spaces."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Fembloc",
+            "regionKey": "spainCatalonia",
+            "categoryKey": "digitalViolence",
+            "emoji": "♀️",
+            "url": "https://fembloc.cat",
+            "es": {
+                  "description": "Colectivo feminista que acompaña a víctimas de violencia machista digital con atención tecnológica, psicosocial y legal, además de guías y kits de autodefensa digital."
+            },
+            "en": {
+                  "description": "A feminist collective supporting victims of digital gender-based violence with technological, psychosocial, and legal assistance, as well as guides and digital self-defense kits."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Digital Defenders Partnership (DDP)",
+            "regionKey": "global",
+            "categoryKey": "feministSecurity",
+            "emoji": "🧩",
+            "url": "https://www.digitaldefenders.org",
+            "es": {
+                  "description": "Programa que brinda fondos de emergencia, acompañamiento y fortalecimiento a redes locales para responder a amenazas digitales contra personas defensoras de derechos humanos y activistas."
+            },
+            "en": {
+                  "description": "A program providing emergency funding, accompaniment, and support to local networks responding to digital threats against human rights defenders and activists."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Laboratorio Ciudadano Honduras",
+            "regionKey": "honduras",
+            "categoryKey": "digitalRights",
+            "emoji": "🏛️",
+            "url": "https://www.facebook.com/labciudadanohn",
+            "es": {
+                  "description": "Plataforma que impulsa pensamiento crítico y prácticas de poder digital comunitario, promoviendo reflexión y acción sobre derechos digitales y participación ciudadana en línea."
+            },
+            "en": {
+                  "description": "A platform promoting critical thinking and community digital power practices, encouraging reflection and action around digital rights and online civic participation."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Digital Rights Foundation (DRF)",
+            "regionKey": "pakistan",
+            "categoryKey": "digitalViolence",
+            "emoji": "🔐",
+            "url": "https://digitalrightsfoundation.pk",
+            "es": {
+                  "description": "ONG feminista que trabaja por espacios digitales seguros para mujeres y minorías, con línea de ayuda contra el acoso cibernético, alfabetización digital y formación en gobernanza de internet."
+            },
+            "en": {
+                  "description": "A feminist NGO working for safe digital spaces for women and minorities, offering a cyber harassment helpline, digital literacy campaigns, and internet governance training."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "PurpleCode Collective",
+            "regionKey": "indonesia",
+            "categoryKey": "feministSecurity",
+            "emoji": "💜",
+            "url": "https://home.purplecodecollective.net/wp/",
+            "es": {
+                  "description": "Colectivo feminista que fortalece perspectivas de género en internet y acompaña a sobrevivientes de violencia basada en género en línea mediante apoyo y educación digital."
+            },
+            "en": {
+                  "description": "A feminist collective strengthening gender perspectives online and supporting survivors of online gender-based violence through assistance and digital education."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "ECHAP",
+            "regionKey": "franceEurope",
+            "categoryKey": "digitalViolence",
+            "emoji": "🫂",
+            "url": "https://echap.eu.org/",
+            "es": {
+                  "description": "Organización que acompaña a personas afectadas por violencia digital, especialmente mujeres y personas LGBTI+, combinando apoyo técnico, jurídico y psicosocial."
+            },
+            "en": {
+                  "description": "An organization supporting people affected by digital violence, especially women and LGBTI+ people, combining technical, legal, and psychosocial assistance."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Navegando Libres",
+            "regionKey": "ecuador",
+            "categoryKey": "digitalViolence",
+            "emoji": "⛵",
+            "url": "https://navegandolibres.org/",
+            "es": {
+                  "description": "Colectiva feminista que acompaña a mujeres y disidencias frente a violencias digitales, con apoyo psicosocial y legal, recursos de seguridad digital y procesos formativos."
+            },
+            "en": {
+                  "description": "A feminist collective supporting women and gender-diverse people facing digital violence, with psychosocial and legal support, digital security resources, and training processes."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Técnicas Rudas",
+            "regionKey": "mexico",
+            "categoryKey": "feministNarratives",
+            "emoji": "🛠️",
+            "url": "https://www.narrativasymemorias.org/",
+            "es": {
+                  "description": "Colectiva feminista que trabaja en memoria, narrativas y seguridad/autocuidado digital, creando contenidos, talleres y acompañamiento para enfrentar violencias en línea."
+            },
+            "en": {
+                  "description": "A feminist collective working on memory, narratives, and digital security/self-care, creating content, workshops, and support to address online violence."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "MariaLab",
+            "regionKey": "brazil",
+            "categoryKey": "feministSecurity",
+            "emoji": "👩‍💻",
+            "url": "https://marialab.org/en/",
+            "es": {
+                  "description": "Hackerspace feminista que fomenta la participación de mujeres y personas trans en ciencia y tecnología, promoviendo seguridad digital, espacios seguros de aprendizaje y acciones contra violencias digitales."
+            },
+            "en": {
+                  "description": "A feminist hackerspace fostering the participation of women and trans people in science and technology, promoting digital security, safe learning spaces, and action against digital violence."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "Red Sobrevivientes",
+            "regionKey": "chile",
+            "categoryKey": "digitalViolence",
+            "emoji": "🧡",
+            "url": "https://www.redsobrevivientes.org",
+            "es": {
+                  "description": "Red que acompaña a sobrevivientes de violencias machistas, incluyendo violencias digitales, visibilizando sus experiencias y promoviendo cambios institucionales y culturales para la reparación."
+            },
+            "en": {
+                  "description": "A network supporting survivors of gender-based violence, including digital violence, making their experiences visible and promoting institutional and cultural change for repair."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "RATI Foundation for Social Change",
+            "regionKey": "india",
+            "categoryKey": "childrenSafety",
+            "emoji": "🧒",
+            "url": "https://ratifoundation.org/",
+            "es": {
+                  "description": "Organización que trabaja en la prevención y atención de la violencia sexual y otras violencias contra niñas, niños y adolescentes, incluyendo iniciativas frente al acoso y abuso digital."
+            },
+            "en": {
+                  "description": "An organization working to prevent and respond to sexual violence and other forms of violence against children and adolescents, including initiatives addressing digital harassment and abuse."
+            }
+      },
+      {
+            "type": "organization",
+            "name": "QuintoE Lab",
+            "regionKey": "globalSouth",
+            "categoryKey": "digitalRights",
+            "emoji": "🔎",
+            "url": "https://quintoelab.org/",
+            "es": {
+                  "description": "Laboratorio de justicia digital que investiga y acompaña procesos sobre tecnologías, poder y desigualdades, con enfoque en género, raza y territorio."
+            },
+            "en": {
+                  "description": "A digital justice lab researching and supporting processes around technologies, power, and inequality, with a focus on gender, race, and territory."
+            }
+      },
+      {
+            "type": "resource",
+            "name": "Moverse seguras y seguros",
+            "regionKey": "ecuador",
+            "categoryKey": "tools",
+            "emoji": "🧰",
+            "url": "https://help.unhcr.org/ecuador/wp-content/uploads/sites/34/2022/08/Guia-metodologica-sobre-Violencia-de-Genero-Digital-para-MH.pdf",
+            "es": {
+                  "description": "Guía metodológica sobre violencia de género digital para contextos de movilidad humana, desarrollada por TCM y ACNUR Ecuador."
+            },
+            "en": {
+                  "description": "A methodological guide on digital gender-based violence for human mobility contexts, developed by TCM and UNHCR Ecuador."
+            }
+      },
+      {
+            "type": "resource",
+            "name": "Cómo reportar violencia sexual responsablemente",
+            "regionKey": "iberoamerica",
+            "categoryKey": "journalism",
+            "emoji": "📝",
+            "url": "https://fundaciongabo.org/es/etica-periodistica/recursos/como-reportar-sobre-violencia-sexual-de-manera-responsable-pautas-y",
+            "es": {
+                  "description": "Guía ética de Fundación Gabo para la cobertura periodística responsable de violencia sexual."
+            },
+            "en": {
+                  "description": "An ethical guide from Fundación Gabo for responsible journalistic coverage of sexual violence."
+            }
+      },
+      {
+            "type": "resource",
+            "name": "Recursos para cubrir violencia de género",
+            "regionKey": "diaspora",
+            "categoryKey": "journalism",
+            "emoji": "🎙️",
+            "url": "https://radioambulante.org/extras/recursos-para-periodistas-como-cubrir-violencia-de-genero-responsablemente",
+            "es": {
+                  "description": "Compilación de guías y materiales de Radio Ambulante Studios para periodistas que cubren violencia de género."
+            },
+            "en": {
+                  "description": "A compilation of guides and materials from Radio Ambulante Studios for journalists covering gender-based violence."
+            }
+      },
+      {
+            "type": "resource",
+            "name": "Biblio K",
+            "regionKey": "colombia",
+            "categoryKey": "digitalRights",
+            "emoji": "📖",
+            "url": "https://web.karisma.org.co/bibliok/",
+            "es": {
+                  "description": "Biblioteca digital de Fundación Karisma sobre derechos humanos, tecnología, cultura digital y políticas públicas."
+            },
+            "en": {
+                  "description": "Fundación Karisma’s digital library on human rights, technology, digital culture, and public policy."
+            }
+      },
+      {
+            "type": "resource",
+            "name": "IA Feminista – Proyectos en curso",
+            "regionKey": "latinAmerica",
+            "categoryKey": "aiFeminist",
+            "emoji": "🤖",
+            "url": "https://iafeminista.lat/proyectos-en-curso/",
+            "es": {
+                  "description": "Programas, prototipos e iniciativas regionales que exploran inteligencia artificial desde una perspectiva feminista."
+            },
+            "en": {
+                  "description": "Regional programs, prototypes, and initiatives exploring artificial intelligence from a feminist perspective."
+            }
+      },
+      {
+            "type": "resource",
+            "name": "Access Now – Resources",
+            "regionKey": "global",
+            "categoryKey": "tools",
+            "emoji": "🗂️",
+            "url": "https://www.accessnow.org/resources/",
+            "es": {
+                  "description": "Biblioteca global de guías, reportes y herramientas sobre derechos digitales, seguridad digital y libertad en internet."
+            },
+            "en": {
+                  "description": "A global library of guides, reports, and tools on digital rights, digital security, and internet freedom."
+            }
+      },
+      {
+            "type": "resource",
+            "name": "Digital Security Helpline",
+            "regionKey": "global",
+            "categoryKey": "helpline",
+            "emoji": "🆘",
+            "url": "https://www.accessnow.org/help/",
+            "es": {
+                  "description": "Línea de ayuda de Access Now para organizaciones y personas en riesgo que necesitan apoyo urgente en seguridad digital."
+            },
+            "en": {
+                  "description": "Access Now’s helpline for organizations and individuals at risk who need urgent digital security support."
+            }
+      },
+      {
+            "type": "resource",
+            "name": "Meri Trustline",
+            "regionKey": "india",
+            "categoryKey": "childrenSafety",
+            "emoji": "☎️",
+            "url": "",
+            "es": {
+                  "description": "Línea de ayuda de RATI Foundation para apoyar a niñas, niños y adolescentes ante acoso digital, difusión de contenido íntimo y otras violencias en línea."
+            },
+            "en": {
+                  "description": "A RATI Foundation helpline supporting children and adolescents facing digital harassment, non-consensual intimate content sharing, and other online harms."
+            }
+      },
+      {
+            "type": "resource",
+            "name": "Ser Valiente en Red – Guía de Educación Sexual Integral Digital",
+            "regionKey": "latinAmerica",
+            "categoryKey": "tools",
+            "emoji": "📘",
+            "url": "https://servalienteenred.org/wp-content/uploads/2025/11/Guia-ESI-Digital-Ser-Valiente-en-Red.pdf",
+            "es": {
+                  "description": "Guía de educación sexual integral digital sobre violencia digital, cuidados, consentimiento y autocuidado en línea para jóvenes, educadorxs y familias."
+            },
+            "en": {
+                  "description": "A digital comprehensive sexuality education guide on digital violence, care, consent, and online self-care for young people, educators, and families."
+            }
+      }
+];
+
+    const state = { lang: 'es', type: 'all', category: 'all', region: 'all', query: '' };
+
+    const grid = document.getElementById('grid');
+    const empty = document.getElementById('empty');
+    const search = document.getElementById('search');
+    const category = document.getElementById('category');
+    const region = document.getElementById('region');
+    const resultCount = document.getElementById('result-count');
+
+    function t(key) { return UI[state.lang][key]; }
+
+    function uniqueKeys(field) {
+      return [...new Set(items.map(item => item[field]))].filter(Boolean).sort((a, b) => {
+        const A = UI[state.lang].regions[a] || UI[state.lang].categories[a] || a;
+        const B = UI[state.lang].regions[b] || UI[state.lang].categories[b] || b;
+        return A.localeCompare(B);
+      });
+    }
+
+    function populateSelects() {
+      const cats = uniqueKeys('categoryKey');
+      const regs = uniqueKeys('regionKey');
+      category.innerHTML = `<option value="all">${UI[state.lang].allCategories}</option>` + cats.map(k => `<option value="${k}">${UI[state.lang].categories[k] || k}</option>`).join('');
+      region.innerHTML = `<option value="all">${UI[state.lang].allRegions}</option>` + regs.map(k => `<option value="${k}">${UI[state.lang].regions[k] || k}</option>`).join('');
+      category.value = state.category;
+      region.value = state.region;
+    }
+
+    function setLanguage(lang) {
+      state.lang = lang;
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (UI[lang][key]) el.textContent = UI[lang][key];
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+      search.placeholder = UI[lang].searchPlaceholder;
+      search.setAttribute('aria-label', UI[lang].searchPlaceholder);
+      populateSelects();
+      render();
+    }
+
+    function filterItems() {
+      const q = state.query.trim().toLowerCase();
+      return items.filter(item => {
+        const local = item[state.lang] || item.es;
+        const regionLabel = UI[state.lang].regions[item.regionKey] || item.regionKey;
+        const categoryLabel = UI[state.lang].categories[item.categoryKey] || item.categoryKey;
+        const haystack = `${item.name} ${regionLabel} ${categoryLabel} ${local.description}`.toLowerCase();
+        return (state.type === 'all' || item.type === state.type)
+          && (state.category === 'all' || item.categoryKey === state.category)
+          && (state.region === 'all' || item.regionKey === state.region)
+          && (!q || haystack.includes(q));
+      });
+    }
+
+    function cardTemplate(item) {
+      const local = item[state.lang] || item.es;
+      const regionLabel = UI[state.lang].regions[item.regionKey] || item.regionKey;
+      const categoryLabel = UI[state.lang].categories[item.categoryKey] || item.categoryKey;
+      const kindLabel = item.type === 'organization' ? UI[state.lang].organization : UI[state.lang].resource;
+      const cta = item.type === 'organization' ? UI[state.lang].visit : UI[state.lang].visitResource;
+      const href = item.url ? item.url : '#';
+      const disabled = item.url ? '' : ' disabled';
+      const linkAttrs = item.url ? 'target="_blank" rel="noopener noreferrer"' : 'aria-disabled="true"';
+      return `
+        <article class="card">
+          <div class="card-top">
+            <span class="emoji" aria-hidden="true">${item.emoji}</span>
+            <span class="kind ${item.type === 'organization' ? 'org' : 'resource'}">${kindLabel}</span>
+          </div>
+          <h3>${item.name}</h3>
+          <p class="region">${regionLabel}</p>
+          <p class="description">${local.description}</p>
+          <div class="tags"><span class="tag">${categoryLabel}</span></div>
+          <a class="visit${disabled}" href="${href}" ${linkAttrs}>${item.url ? cta : UI[state.lang].noStableLink} →</a>
+        </article>`;
+    }
+
+    function render() {
+      const filtered = filterItems();
+      grid.innerHTML = filtered.map(cardTemplate).join('');
+      empty.style.display = filtered.length ? 'none' : 'block';
+      resultCount.textContent = UI[state.lang].results(filtered.length);
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+    });
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.type = btn.dataset.type;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.type === state.type));
+        render();
+      });
+    });
+
+    search.addEventListener('input', e => { state.query = e.target.value; render(); });
+    category.addEventListener('change', e => { state.category = e.target.value; render(); });
+    region.addEventListener('change', e => { state.region = e.target.value; render(); });
+    document.getElementById('reset').addEventListener('click', () => {
+      state.type = 'all'; state.category = 'all'; state.region = 'all'; state.query = '';
+      search.value = '';
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.type === 'all'));
+      populateSelects(); render();
+    });
+
+    populateSelects();
+    render();
+  </script>
+</body>
+</html>
